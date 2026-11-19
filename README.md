@@ -32,11 +32,11 @@
 
 ## Objectifs de la phase 2 (opérationnels)
 
-1. **Stratification biomarqueur** autour de CA125/MUC16 et CEA chez les tumeurs à KRAS élevé (et test de valeur ajoutée pour les patients candidats aux pan-RAS).
-2. **Appui / contexte** autour de la piste clinique vopimetostat + daraxonrasib (MTAP / PRMT5) : ordres, co-expression, vulnérabilités associées.
-3. **Axes d’ordonnancement plus légitimes** que le simple rang KRAS ou pureté (fraction allélique si disponible, scores de pureté + sous-type, ordre par sensibilité médicament de référence, scores de progression clinique).
-4. **Critères de rétention stricts** : un signal n’est retenu que s’il survit au nul permuté **et** à la rotation des contrôles **et** à au moins une couche orthogonale (protéine ou CRISPR ou survie).
-5. **Livre blanc vivant** : chaque décision, protocole, résultat (positif ou négatif) est documenté avec provenance complète.
+1. **Stratification biomarqueur** autour de CA125/MUC16 et CEA chez les tumeurs à KRAS élevé.
+2. **Appui / contexte** autour de la piste clinique vopimetostat + daraxonrasib (MTAP / PRMT5).
+3. **Axes d’ordonnancement plus légitimes** (VAF KRAS, pureté ESTIMATE, statut MTAP).
+4. **Critères de rétention stricts** : nul + rotation + au moins une couche orthogonale.
+5. **Livre blanc vivant** avec provenance complète.
 
 Aucune promesse clinique. Un résultat négatif est un résultat.
 
@@ -45,35 +45,32 @@ Aucune promesse clinique. Un résultat négatif est un résultat.
 ## Structure du dépôt
 
 ```
-├── README.md                 # ce fichier
-├── livre-blanc/              # source Markdown du livre blanc phase 2
-│   └── livre-blanc-phase2.md
-├── protocols/                # protocoles gelés avant chaque run
+├── README.md
+├── livre-blanc/livre-blanc-phase2.md
+├── protocols/
 │   ├── P2-PROTO-001_CA125_stratification.md
-│   └── P2-PROTO-002_MTAP_context.md
-├── provenance/               # sources, hachages, nature des lignes
-├── results/                  # sorties des runs, tables, verdicts
-├── scripts/                  # scripts d’extraction, construction, analyse
-└── sections/                 # sections numérotées prêtes à insérer
+│   ├── P2-PROTO-002_MTAP_context.md
+│   └── P2-BUILD-001_matrices.md
+├── provenance/
+├── results/
+├── scripts/
+│   └── prepare_enriched_tcga_matrix.py
+└── sections/
 ```
-
-Le code du pipeline UNIVERSAL_LOG reste dans le dépôt d’archives (et éventuellement un dépôt Code séparé). Ce dépôt phase 2 se concentre sur le travail scientifique PDAC, les protocoles, les résultats et le livre blanc.
 
 ---
 
 ## Avancement
 
 - [x] Création du dépôt et structure initiale
-- [x] P2.1 — Plan d’attaque prioritaire et critères de décision
-- [x] P2.2 — Inventaire des axes et variables réellement disponibles
-- [x] Protocoles gelés P2-PROTO-001 (CA125/CEA) et P2-PROTO-002 (MTAP)
-- [ ] Construction des matrices enrichies (VAF KRAS, pureté ESTIMATE, statut MTAP)
+- [x] P2.1 — Plan d’attaque + critères de rétention
+- [x] P2.2 — Inventaire des axes
+- [x] Protocoles gelés P2-PROTO-001 et P2-PROTO-002
+- [x] Script + protocole de construction des matrices enrichies (P2-BUILD-001)
+- [ ] Exécution réelle de la construction (nécessite fichiers locaux : expression, mtap_gistic_status.csv, pureté ESTIMATE, MAF KRAS)
 - [ ] Premier lot de runs phase 2 + nuls + rotations
 - [ ] Verdicts selon critères de rétention + mise à jour livre blanc
 
 ---
 
-**Mandat d’origine (Zackary, 15–16 nov. 2026) :** chercher des pistes thérapeutiques contre le PDAC avec le pipeline, maintenir un livre blanc de tout ce qui est fait / testé / pensé / analysé / connu / inconnu, continuer jusqu’à ce qu’une piste solide émerge.  
-**Règle permanente :** traçable, reproductible, clair, public. Le pipeline lui-même n’est pas commercialisé.
-
-Travail bénévole, non clinique, sur données publiques.
+**Mandat d’origine (Zackary, 15–16 nov. 2026).** Travail bénévole, non clinique, sur données publiques. Pipeline non commercialisé.
