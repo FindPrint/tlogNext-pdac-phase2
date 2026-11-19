@@ -7,38 +7,38 @@
 
 ---
 
-## État au 19 novembre 2026 (soir)
+## État final de la session (19 nov 2026 soir)
 
 ### Matrice
 ```bash
 python scripts/restore_tcga_enriched_p2.py
-# → data/tcga_enriched_p2.csv  (179×24, SHA 6a53c8c6…)
+# → 179×24 · SHA256 6a53c8c6…
 ```
 Pureté InfiniumPurify jointe (n=178).
 
-### Signaux après contrôle pureté (P2.7–P2.8)
-| Signal | Après pureté | Statut |
-|--------|--------------|--------|
-| KRAS → CEA | atténué (p≈0,07–0,12) · haut quartile p=0,033 | **faible résiduel** |
-| KRAS → CA125 | atténué | faible |
-| MTAP → CEA / CA125 | **disparu** | confondu par pureté |
+### Signaux après pureté + tests de rétention (nuls)
+
+| Signal | null_p | Statut |
+|--------|--------|--------|
+| MTAP → CEA/CA125 | > 0,25 | **Non retenu** (confondu pureté) |
+| KRAS continu → CEA | 0,13 | **Non retenu** |
+| **kras_high (Q4) → CEA résidualisé** | **0,054** | **Faible / hypothétique** |
+
+Un seul axe frôle le seuil de rétention. Effet petit (d≈0,34).
+
+### Documents
+- Livre blanc : `livre-blanc/livre-blanc-phase2.md` (P2.9)
+- `results/P2_006_purity_confounding.md`
+- `results/P2_007_kras_after_purity.md`
+- `results/P2_009_retention_nulls.md`
 
 ### Avancement
-- [x] Dépôt + plan + protocoles
-- [x] Matrice enrichie Firehose + restore fonctionnel
-- [x] Tests directs + residualisation KRAS
-- [x] Contrôle pureté (InfiniumPurify) — négatifs honnêtes documentés
-- [ ] UNIVERSAL_LOG v6.2 avec pureté covariable
+- [x] Matrice enrichie + restore fonctionnel
+- [x] Contrôle pureté (InfiniumPurify)
+- [x] Tests de rétention (nuls) sur axes prioritaires
+- [x] Négatifs honnêtes documentés (MTAP, KRAS continu)
+- [ ] Validation externe GEO du signal kras_high
+- [ ] UNIVERSAL_LOG v6.2 full sur l’axe restant
 - [ ] ESTIMATE / ABSOLUTE en complément
-- [ ] Validation externe GEO
-
-### Structure clé
-```
-├── livre-blanc/livre-blanc-phase2.md   ← P2.8 à jour
-├── results/P2_006_purity_confounding.md
-├── results/P2_007_kras_after_purity.md
-├── data/b64_chunks/                    ← payload matrice
-└── scripts/restore_tcga_enriched_p2.py
-```
 
 Travail bénévole, non clinique, données publiques. Aucune promesse thérapeutique.
