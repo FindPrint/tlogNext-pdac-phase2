@@ -1,82 +1,75 @@
 # Livre blanc — PDAC Phase 2
 
-**Document vivant** — mis à jour à chaque étape.  
+**Document vivant.**  
 **Dépôt :** [FindPrint/tlogNext-pdac-phase2](https://github.com/FindPrint/tlogNext-pdac-phase2)  
 **Archives :** [FindPrint/tlogNext-cancer-pdac](https://github.com/FindPrint/tlogNext-cancer-pdac)
 
 ---
 
-## P2.0 — Pourquoi un nouveau dépôt
+## P2.0 — Nouveau dépôt (19 nov. 2026)
 
-Date : 19 novembre 2026. Séparation archives (v6.0–v6.2, §1–§8.42) / phase 2 (recentrage signaux robustes).
-
----
-
-## P2.1 — Plan d’attaque et critères de rétention
-
-Priorités : (1) stratification CA125/CEA, (2) contexte MTAP/PRMT5, (3) ATR surveillance.  
-Rétention = nul permuté + rotation + ≥1 couche orthogonale.
+Séparation archives / phase 2. Recentrage sur signaux robustes + axes légitimes + critères stricts.
 
 ---
 
-## P2.2 — Inventaire des axes
+## P2.1 — Plan et critères de rétention
 
-Axes actionnables : VAF/expression KRAS, statut MTAP (GISTIC −2), pureté ESTIMATE.
-
----
-
-## P2.3 — Matrice enrichie construite
-
-Date : 19 novembre 2026.
-
-- Téléchargement Firehose PAAD RSEM (MD5 `b09569ce…` ✓) + GISTIC (MD5 `816034f7…` ✓)
-- `data/tcga_enriched_p2.csv` : **179 × 23**, SHA256 `6a53c8c64a20f8da0464642308841a3afafeade41bf044e0de226116fa7bfcfd`
-- MTAP-del : 43/177 | kras_fort : 12
-- Gènes : MUC16, CEACAM5, KRAS, panel contexte, PRMT5, MTAP, CDKN2A
-- Provenance : `provenance/PROVENANCE_tcga_enriched_p2.md`
+Priorités : CA125/CEA stratification → contexte MTAP/PRMT5 → ATR surveillance.  
+Rétention = nul + rotation + ≥1 orthogonalité.
 
 ---
 
-## P2.4 — P2-PROTO-001 lite (tests directs)
+## P2.2 — Inventaire axes
 
-Date : 19 novembre 2026. Sans pipeline v6.2 (tests non paramétriques + Spearman).
+VAF/expression KRAS, MTAP (GISTIC −2), pureté ESTIMATE (à ajouter).
 
-### Confirmé
+---
+
+## P2.3 — Matrice enrichie
+
+- Firehose RSEM + GISTIC re-téléchargés (MD5 vérifiés)
+- `tcga_enriched_p2.csv` : 179×23, SHA256 `6a53c8c64a20f8da0464642308841a3afafeade41bf044e0de226116fa7bfcfd`
+- MTAP-del 43/177 · kras_fort 12
+- Restauration : `python scripts/restore_tcga_enriched_p2.py` (si payload b64 présent)
+
+---
+
+## P2.4 — Tests directs lite (confirmés)
 
 | Association | Stat | p |
 |-------------|------|---|
-| KRAS ↔ MUC16 (Spearman) | ρ=0,279 | 1,6×10⁻⁴ |
-| KRAS ↔ CEACAM5 (Spearman) | ρ=0,342 | 2,8×10⁻⁶ |
-| kras_fort (top-12) → MUC16 ↑ | Δmed +1,95 | 0,014 |
-| kras_fort (top-12) → CEACAM5 ↑ | Δmed +2,59 | 0,006 |
-
-### Nouveau signal exploratoire
-
-| Association | Stat | p |
-|-------------|------|---|
-| MTAP-del → MUC16 ↑ | Δmed +1,85 | 0,011 |
-| MTAP-del → CEACAM5 ↑ | Δmed +1,48 | 0,004 |
-
-Fisher kras_fort × MTAP-del : OR=3,46, p=0,073 (identique archives).
-
-### Verdict lite
-
-Signal CA125/CEA chez KRAS élevé **retenu au niveau expression**.  
-Lien MTAP–MUC16/CEACAM5 **exploratoire** — à soumettre aux critères stricts (nul, rotation, pureté, v6.2).
-
-Détail : `results/P2_001_lite_verdict.md`, `results/p2_proto001_lite_direct_tests.csv`.
+| KRAS ↔ MUC16 | ρ=0,28 | 1,6×10⁻⁴ |
+| KRAS ↔ CEACAM5 | ρ=0,34 | 2,8×10⁻⁶ |
+| kras_fort → MUC16/CEA ↑ | Δmed +1,9 / +2,6 | 0,014 / 0,006 |
+| MTAP-del → MUC16/CEA ↑ | Δmed +1,9 / +1,5 | 0,011 / 0,004 |
 
 ---
 
-## Journal phase 2
+## P2.5 — Analyses étendues MTAP (contrôle KRAS)
 
-| Date | Action | Note |
-|------|--------|------|
-| 19 nov 2026 | Création dépôt phase 2 | Séparation archives |
-| 19 nov 2026 | P2.1–P2.2 + PROTO-001/002 | Plan + inventaire + protocoles |
-| 19 nov 2026 | P2.3 matrice enrichie | Firehose re-téléchargé, SHA 6a53c8c6 |
-| 19 nov 2026 | P2.4 tests directs lite | Signal CA125/CEA confirmé ; MTAP exploratoire |
+| Test | Cible | Résultat |
+|------|-------|----------|
+| Résidus ~ KRAS | CEACAM5 | Δmed +1,46 **p=0,020** |
+| Résidus ~ KRAS | MUC16 | Δmed +1,19 p=0,063 |
+| Spearman GISTIC | CEACAM5 | ρ=−0,33 **p=7×10⁻⁶** |
+| Spearman GISTIC | MUC16 | ρ=−0,25 **p=9,5×10⁻⁴** |
+| Cohen d MTAP-del | CEACAM5 / MUC16 | +0,52 / +0,35 |
+
+**Verdict intermédiaire :**  
+- Signal KRAS→CA125/CEA **solide**.  
+- Signal MTAP→CEACAM5 **exploratoire mais résistant** à l’ajustement KRAS.  
+- MTAP→MUC16 plus fragile.
+
+Détail : `results/P2_001_extended_verdict.md`.
 
 ---
 
-*Suite : pureté ESTIMATE, runs v6.2, validation externe.*
+## Journal
+
+| Date | Action |
+|------|--------|
+| 19 nov | Dépôt phase 2 + protocoles |
+| 19 nov | Matrice Firehose + tests lite |
+| 19 nov | Analyses étendues MTAP (résidus, ordinal, d) |
+
+*Suite : pureté ESTIMATE, pipeline v6.2, validation GEO.*

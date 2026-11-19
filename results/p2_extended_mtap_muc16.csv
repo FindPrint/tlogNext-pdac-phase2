@@ -1,0 +1,5 @@
+test,target,delta_med,p
+MTAP_resid_KRAS,MUC16_log2,1.188,0.06302
+spearman_gistic,MUC16_log2,-0.246,0.0009549
+MTAP_resid_KRAS,CEACAM5_log2,1.463,0.01993
+spearman_gistic,CEACAM5_log2,-0.330,7.126e-06
