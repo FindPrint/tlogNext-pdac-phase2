@@ -49,6 +49,8 @@ Aucune promesse clinique. Un résultat négatif est un résultat.
 ├── livre-blanc/              # source Markdown du livre blanc phase 2
 │   └── livre-blanc-phase2.md
 ├── protocols/                # protocoles gelés avant chaque run
+│   ├── P2-PROTO-001_CA125_stratification.md
+│   └── P2-PROTO-002_MTAP_context.md
 ├── provenance/               # sources, hachages, nature des lignes
 ├── results/                  # sorties des runs, tables, verdicts
 ├── scripts/                  # scripts d’extraction, construction, analyse
@@ -59,13 +61,15 @@ Le code du pipeline UNIVERSAL_LOG reste dans le dépôt d’archives (et éventu
 
 ---
 
-## Prochaines actions immédiates
+## Avancement
 
 - [x] Création du dépôt et structure initiale
-- [ ] Rédiger §P2.1 — Plan d’attaque prioritaire et critères de décision
-- [ ] Définir 2–3 protocoles gelés (axes + flux + nuls + rotations)
-- [ ] Inventaire des données réellement disponibles pour les nouveaux axes (fraction allélique KRAS, MTAP status, scores de pureté, etc.)
-- [ ] Premier lot de runs phase 2 + documentation
+- [x] P2.1 — Plan d’attaque prioritaire et critères de décision
+- [x] P2.2 — Inventaire des axes et variables réellement disponibles
+- [x] Protocoles gelés P2-PROTO-001 (CA125/CEA) et P2-PROTO-002 (MTAP)
+- [ ] Construction des matrices enrichies (VAF KRAS, pureté ESTIMATE, statut MTAP)
+- [ ] Premier lot de runs phase 2 + nuls + rotations
+- [ ] Verdicts selon critères de rétention + mise à jour livre blanc
 
 ---
 
