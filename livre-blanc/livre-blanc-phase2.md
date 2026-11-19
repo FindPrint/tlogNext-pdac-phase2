@@ -21,7 +21,7 @@ Rétention = nul + rotation + ≥1 orthogonalité.
 
 ## P2.2 — Inventaire axes
 
-VAF/expression KRAS, MTAP (GISTIC −2), pureté ESTIMATE (à ajouter).
+VAF/expression KRAS, MTAP (GISTIC −2), pureté (InfiniumPurify intégré ; ESTIMATE encore souhaitable).
 
 ---
 
@@ -29,82 +29,64 @@ VAF/expression KRAS, MTAP (GISTIC −2), pureté ESTIMATE (à ajouter).
 
 - Firehose RSEM + GISTIC re-téléchargés (MD5 vérifiés)
 - `tcga_enriched_p2.csv` : 179×24, SHA256 `6a53c8c64a20f8da0464642308841a3afafeade41bf044e0de226116fa7bfcfd`
-- MTAP-del 43/179 · kras_fort (top quartile) ~45
-- Restauration : `python scripts/restore_tcga_enriched_p2.py` (chunks b64)
-- **Note data 19 nov soir :** chunk_04 a nécessité une correction (1 caractère). Reconstruction depuis GitHub en cours de stabilisation. Matrice locale = source de vérité.
+- **Restauration OK** : `python scripts/restore_tcga_enriched_p2.py` (chunks b64 vérifiés)
+- MTAP-del 43/179
 
 ---
 
-## P2.4 — Tests directs lite (confirmés)
+## P2.4 — Tests directs lite
 
 | Association | Stat | p |
 |-------------|------|---|
 | KRAS ↔ MUC16 | ρ=0,28 | 1,6×10⁻⁴ |
 | KRAS ↔ CEACAM5 | ρ=0,34 | 2,8×10⁻⁶ |
-| kras_fort → MUC16/CEA ↑ | Δmed +1,9 / +2,6 | 0,014 / 0,006 |
 | MTAP-del → MUC16/CEA ↑ | Δmed +1,9 / +1,5 | 0,011 / 0,004 |
 
 ---
 
 ## P2.5 — Analyses étendues MTAP (contrôle KRAS)
 
-| Test | Cible | Résultat |
-|------|-------|----------|
-| Résidus ~ KRAS | CEACAM5 | Δmed +1,46 **p=0,020** |
-| Résidus ~ KRAS | MUC16 | Δmed +1,19 p=0,063 |
-| Spearman GISTIC | CEACAM5 | ρ=−0,33 **p=7×10⁻⁶** |
-| Spearman GISTIC | MUC16 | ρ=−0,25 **p=9,5×10⁻⁴** |
-| Cohen d MTAP-del | CEACAM5 / MUC16 | +0,52 / +0,35 |
-
-**Verdict intermédiaire :**  
-- Signal KRAS→CA125/CEA **solide**.  
-- Signal MTAP→CEACAM5 **exploratoire mais résistant** à l’ajustement KRAS.  
-- MTAP→MUC16 plus fragile.
-
+Signal MTAP→CEACAM5 résistant à l’ajustement KRAS (p≈0,01–0,02).  
 Détail : `results/P2_001_mtap_context_verdict.md`.
 
 ---
 
-## P2.6 — Analyses prioritaires + stratification (19 nov 2026 soir)
+## P2.6 — Analyses prioritaires + stratification
 
-### Spearman (ranks)
-- kras_rank ↔ muc16_rank : ρ = 0,279 · p = 1,6×10⁻⁴
-- kras_rank ↔ ceacam5_rank : ρ = 0,342 · p = 2,8×10⁻⁶
-- muc16_rank ↔ ceacam5_rank : ρ = 0,224 · p = 2,6×10⁻³
+Cohen d MTAP-del : CEA +0,53 · CA125 +0,46.  
+Résidus KRAS survivent. Stratification : effet plus clair hors haut quartile KRAS.
 
-### Effets MTAP-del (n_del = 43)
-| Axis | Cohen d | MW p |
-|------|---------|------|
-| ceacam5_rank | **+0,527** | 0,0033 |
-| muc16_rank | **+0,456** | 0,010 |
-| CEACAM5_log2 | +0,523 | 0,0033 |
-| MUC16_log2 | +0,352 | 0,010 |
-| kras_rank | +0,264 | 0,13 (ns) |
-| PRMT5_log2 | −0,023 | 0,83 (ns) |
-| MTAP_log2 | **−1,49** | 2,5×10⁻¹² |
-| CDKN2A_log2 | **−1,46** | 7×10⁻¹⁴ |
+---
 
-### Residualisation KRAS rank
-- resid_muc16_rank ~ mtap_del : r = 0,169 · p = 0,023
-- resid_ceacam5_rank ~ mtap_del : r = 0,190 · p = 0,011
+## P2.7 — Pureté tumorale = confounding majeur (19 nov 2026)
 
-→ Les deux signaux MTAP survivent au contrôle de KRAS rank.
+**Source :** InfiniumPurify (Zenodo 253193), n=178 matchés.
 
-### Stratification kras_high (quartile supérieur)
-- kras_high=False (n_wt=106, n_del=28) : MW ceacam5_rank p = 0,0099
-- kras_high=True (n_wt=30, n_del=15) : MW ceacam5_rank p = 0,60 (ns)
+| Variable | ρ vs pureté | p |
+|----------|-------------|---|
+| ceacam5_rank | **+0,53** | 3×10⁻¹⁴ |
+| kras_rank | **+0,47** | 3×10⁻¹¹ |
+| muc16_rank | +0,24 | 0,001 |
+| mtap_del | +0,27 | 3×10⁻⁴ |
 
-→ L’effet MTAP→CEA est plus clair hors du haut quartile KRAS (puissance limitée dans le stratum élevé).
+**Après residualisation pureté (seule ou + KRAS) :**
+- MTAP-del → CEA : **p ≈ 0,33–0,37 (ns)**
 
-### Statut pureté ESTIMATE
-Non encore intégré. À récupérer depuis Firehose ESTIMATE ou ABSOLUTE scores pour contrôle de confounding pureté/stroma.
+### Verdict mis à jour
+Le signal **MTAP → CEA/CA125** observé précédemment est **largement confondu par la pureté tumorale**. Il ne passe pas le contrôle pureté.
 
-### Prochaines étapes P2.7+
-1. Fix final data payload (chunk_04 ou upload CSV complet 58 ko).
-2. Intégrer pureté ESTIMATE.
-3. Lancer UNIVERSAL_LOG v6.2 full (nuls + rotations) sur axes prioritaires : kras_rank, muc16_rank, ceacam5_rank, mtap_del.
-4. Validation externe GEO GSE71729 / GSE62452.
-5. Interaction formelle KRAS × MTAP.
+Conséquences :
+1. Tout futur run (UNIVERSAL_LOG ou tests directs) doit inclure pureté comme covariable/filtre.
+2. Le signal KRAS ↔ CEA doit être re-testé après contrôle pureté (prochaine priorité).
+3. Négatif honnête documenté : `results/P2_006_purity_confounding.md`.
+
+---
+
+## Prochaines étapes (P2.8+)
+1. Re-tester KRAS → CEA/CA125 après contrôle pureté.
+2. Intégrer ESTIMATE / ABSOLUTE en complément d’InfiniumPurify.
+3. Lancer UNIVERSAL_LOG v6.2 avec pureté dans le modèle (nuls + rotations).
+4. Validation externe GEO.
 
 ---
 
@@ -112,9 +94,9 @@ Non encore intégré. À récupérer depuis Firehose ESTIMATE ou ABSOLUTE scores
 
 | Date | Action |
 |------|--------|
-| 19 nov | Dépôt phase 2 + protocoles |
-| 19 nov | Matrice Firehose + tests lite |
-| 19 nov | Analyses étendues MTAP (résidus, ordinal, d) |
-| 19 nov soir | P2.6 : residualisation confirmée, stratification KRAS, mise à jour livre blanc |
+| 19 nov | Dépôt phase 2 + protocoles + matrice |
+| 19 nov | Tests lite + residualisation KRAS |
+| 19 nov soir | P2.6 analyses prioritaires |
+| 19 nov soir | **P2.7 pureté : signal MTAP→CEA confondu** |
 
-*Suite : pureté ESTIMATE, pipeline v6.2 full, validation GEO.*
+*Travail bénévole, non clinique, données publiques. Aucune promesse thérapeutique.*
