@@ -86,13 +86,69 @@ Le simple « rang KRAS croissant » reste utilisable comme baseline, mais n’es
 
 ---
 
+## P2.2 — Inventaire des axes et variables réellement disponibles (19 novembre 2026)
+
+### Sources principales déjà utilisées ou accessibles
+
+| Source | Type | n approximatif | Variables clés pour phase 2 | Notes / limites |
+|--------|------|----------------|-----------------------------|-----------------|
+| **TCGA-PAAD** (Firehose / cBioPortal / GDC) | ARN + mutations + CNA + clinique | ~178 tumeurs primaires | Expression MUC16, CEACAM5, KRAS ; mutations KRAS (dont VAF dans les MAF) ; CNA 9p21 (MTAP/CDKN2A) ; pureté ESTIMATE / CPE ; survie ; stade | Biais résécable (stade IIB dominant). Pureté ESTIMATE disponible (RNA-seqV2). KRAS VAF récupérable depuis les appels mutation. |
+| **CPTAC PDAC** (Cao et al. Cell 2021) | Protéome + phospho + ARN + WES | 140 tumeurs (105 haute cellularité) | KRAS VAF (cutoff 0,075 utilisé pour pureté) ; expression protéique éventuelle MUC16/CEACAM5 ; statut MTAP/CDKN2A | Excellent pour orthogonalité protéique. Déjà partiellement exploré. |
+| **DepMap 24Q4** | CRISPR Chronos + lignées | ~45 lignées pancréas | Dépendance PRMT5, ATR, etc. ; statut MTAP des lignées | Déjà utilisé pour l’arbitrage MTAP/PRMT5 (p=0,0036). |
+| **GEO GSE71729 / GSE62452** | Expression (puce) | 145 / 69 | Expression MUC16, CEACAM5, KRAS | Validation externe du signal CA125/CEA. |
+| **ICGC** | Expression + clinique | ~70 | Survie, expression | Signal CA125 de survie déjà vu ; expression moins claire. |
+
+### Axes prioritaires — disponibilité concrète
+
+1. **Fraction allélique / dose KRAS**  
+   - Disponible : VAF KRAS dans les fichiers de mutations TCGA (MAF) et CPTAC.  
+   - Dosage mutant (copies du mutant) plus élaboré existe dans la littérature récente (Nature Medicine 2025) mais demande pureté + CNA + VAF.  
+   - **Utilisable immédiatement** comme axe continu (VAF) ou binaire (haut vs bas VAF).
+
+2. **Statut MTAP**  
+   - Inférable par deep deletion 9p21 (GISTIC / CNA) — très corrélé à CDKN2A.  
+   - Prévalence PDAC ~20–28 %.  
+   - Déjà partiellement arbitré (§8.40 archives).  
+   - **Utilisable immédiatement** comme contrôle binaire (délété vs intact).
+
+3. **Pureté tumorale**  
+   - ESTIMATE (stromal + immune → pureté) disponible pour TCGA-PAAD RNA-seqV2 (n≈179).  
+   - CPE (consensus) et ABSOLUTE partiellement disponibles.  
+   - CPTAC a utilisé KRAS VAF ≥ 0,075 comme proxy de cellularité.  
+   - **Déjà utilisé** dans les versions v3/v4 du projet ; à réutiliser systématiquement comme covariable ou axe.
+
+4. **Sous-type moléculaire (basal / classical)**  
+   - Calculable à partir de l’expression (signatures Moffitt ou Bailey).  
+   - Disponible dans plusieurs publications TCGA/CPTAC.  
+   - **À construire** si pas déjà présent dans les matrices locales.
+
+5. **Ordre par CA125 (MUC16) ou CEA**  
+   - Directement disponible dans toutes les matrices d’expression déjà utilisées.  
+   - Utile pour tester la cohérence interne du signal (si on ordonne par MUC16, les autres flux du panel se comportent-ils de façon cohérente ?).
+
+6. **Sensibilité médicament**  
+   - PRISM / GDSC disponibles via DepMap ; vopimetostat absent des bibliothèques testées (§8.40).  
+   - Pas d’axe « sensibilité daraxonrasib » public à ce jour (médicament trop récent).
+
+### Conclusion de l’inventaire
+
+Les trois axes les plus légitimes et immédiatement actionnables sont :
+1. **VAF / expression KRAS** (continuum)
+2. **Statut MTAP** (binaire, CNA)
+3. **Pureté ESTIMATE** (continuum) + éventuel sous-type
+
+CA125/CEA restent les cibles prioritaires de stratification.
+
+---
+
 ## Journal phase 2
 
 | Date | Action | Résultat / note |
 |------|--------|-----------------|
 | 19 nov. 2026 | Création du dépôt `tlogNext-pdac-phase2` | Séparation claire archives / phase 2 |
 | 19 nov. 2026 | Rédaction P2.0 + P2.1 | Plan d’attaque et critères de rétention publiés |
+| 19 nov. 2026 | Rédaction P2.2 + protocoles 001/002 | Inventaire axes + premiers protocoles gelés |
 
 ---
 
-*Fin de la section initiale. Les sections suivantes (P2.2 inventaire données, P2.3 protocoles, etc.) seront ajoutées au fur et à mesure.*
+*Les sections suivantes seront ajoutées au fur et à mesure des runs et des verdicts.*
