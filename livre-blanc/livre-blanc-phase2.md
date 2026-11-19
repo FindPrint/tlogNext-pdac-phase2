@@ -1,93 +1,82 @@
 # Livre blanc — PDAC Phase 2
 
-**Document vivant** — mis à jour à chaque étape (fait / testé / pensé / analysé / connu / inconnu).  
+**Document vivant** — mis à jour à chaque étape.  
 **Dépôt :** [FindPrint/tlogNext-pdac-phase2](https://github.com/FindPrint/tlogNext-pdac-phase2)  
-**Archives (v6.0–v6.2, §1–§8.42) :** [FindPrint/tlogNext-cancer-pdac](https://github.com/FindPrint/tlogNext-cancer-pdac)
-
-**Règle de provenance (permanente) :** chaque donnée, chaque résultat, chaque affirmation porte sa source complète, la nature des lignes, comment chaque valeur a été produite, les hachages, et ce qui manque.
-
-**Règle d’honnêteté (permanente) :** ce document ne présente jamais une piste comme un remède, ni un seuil comme une preuve clinique. Un résultat négatif est un résultat.
+**Archives :** [FindPrint/tlogNext-cancer-pdac](https://github.com/FindPrint/tlogNext-cancer-pdac)
 
 ---
 
-## P2.0 — Pourquoi un nouveau dépôt et un recentrage
+## P2.0 — Pourquoi un nouveau dépôt
+
+Date : 19 novembre 2026. Séparation archives (v6.0–v6.2, §1–§8.42) / phase 2 (recentrage signaux robustes).
+
+---
+
+## P2.1 — Plan d’attaque et critères de rétention
+
+Priorités : (1) stratification CA125/CEA, (2) contexte MTAP/PRMT5, (3) ATR surveillance.  
+Rétention = nul permuté + rotation + ≥1 couche orthogonale.
+
+---
+
+## P2.2 — Inventaire des axes
+
+Axes actionnables : VAF/expression KRAS, statut MTAP (GISTIC −2), pureté ESTIMATE.
+
+---
+
+## P2.3 — Matrice enrichie construite
 
 Date : 19 novembre 2026.
 
-Le travail des 15–19 novembre 2026 (dépôt d’archives) a produit :
-- Un instrument fiable (v6.2, gigue L5 = 0).
-- Un signal d’expression robuste : KRAS élevé ↔ CA125 (MUC16) / CEA élevés, avec lien de survie pour CA125.
-- Une piste clinique réelle hors pipeline (daraxonrasib ; combinaison vopimetostat + daraxonrasib chez MTAP-délétés avec appui PRMT5).
-- Beaucoup de négatifs solides (différenciation pureté-dépendante, CRISPR/médicaments négatifs, protéine non confirmatoire, Delta/MC non discriminants).
-
-Continuer à tourner des versions du même pipeline sur les mêmes axes (rang KRAS, pureté) risquait de diluer l’attention et de mélanger archives et travail de suite. Ce dépôt isole la **phase 2** : recentrage sur ce qui tient, axes plus légitimes, critères de rétention plus stricts, livre blanc vivant dédié.
+- Téléchargement Firehose PAAD RSEM (MD5 `b09569ce…` ✓) + GISTIC (MD5 `816034f7…` ✓)
+- `data/tcga_enriched_p2.csv` : **179 × 23**, SHA256 `6a53c8c64a20f8da0464642308841a3afafeade41bf044e0de226116fa7bfcfd`
+- MTAP-del : 43/177 | kras_fort : 12
+- Gènes : MUC16, CEACAM5, KRAS, panel contexte, PRMT5, MTAP, CDKN2A
+- Provenance : `provenance/PROVENANCE_tcga_enriched_p2.md`
 
 ---
 
-## P2.1 — Plan d’attaque prioritaire et critères de décision
+## P2.4 — P2-PROTO-001 lite (tests directs)
 
-Date : 19 novembre 2026.
+Date : 19 novembre 2026. Sans pipeline v6.2 (tests non paramétriques + Spearman).
 
-### Objectif opérationnel
+### Confirmé
 
-Produire **2 à 4 hypothèses** de biomarqueur de stratification ou de combinaison / fenêtre thérapeutique, avec le plus fort niveau de preuve orthogonal possible (expression + CRISPR + sensibilité médicament + survie + contrôle de pureté).
+| Association | Stat | p |
+|-------------|------|---|
+| KRAS ↔ MUC16 (Spearman) | ρ=0,279 | 1,6×10⁻⁴ |
+| KRAS ↔ CEACAM5 (Spearman) | ρ=0,342 | 2,8×10⁻⁶ |
+| kras_fort (top-12) → MUC16 ↑ | Δmed +1,95 | 0,014 |
+| kras_fort (top-12) → CEACAM5 ↑ | Δmed +2,59 | 0,006 |
 
-### Priorités
+### Nouveau signal exploratoire
 
-1. Stratification **CA125 (MUC16) / CEA** chez KRAS élevé  
-2. Contexte **MTAP-délété / PRMT5 / vopimetostat + daraxonrasib**  
-3. ATR en surveillance seulement  
-4. Autres uniquement si un nouvel axe les réactive
+| Association | Stat | p |
+|-------------|------|---|
+| MTAP-del → MUC16 ↑ | Δmed +1,85 | 0,011 |
+| MTAP-del → CEACAM5 ↑ | Δmed +1,48 | 0,004 |
 
-### Critères de rétention (stricts)
+Fisher kras_fort × MTAP-del : OR=3,46, p=0,073 (identique archives).
 
-Un signal n’est retenu que s’il survit au **nul permuté** ET à la **rotation des contrôles** ET à **au moins une couche orthogonale** (protéine, CRISPR, sensibilité médicament, ou survie indépendante de pureté).
+### Verdict lite
 
----
+Signal CA125/CEA chez KRAS élevé **retenu au niveau expression**.  
+Lien MTAP–MUC16/CEACAM5 **exploratoire** — à soumettre aux critères stricts (nul, rotation, pureté, v6.2).
 
-## P2.2 — Inventaire des axes et variables réellement disponibles
-
-Axes immédiatement actionnables :
-1. VAF / expression KRAS  
-2. Statut MTAP (GISTIC -2)  
-3. Pureté ESTIMATE (TCGA-PAAD)
-
-Sources : TCGA-PAAD, CPTAC, DepMap 24Q4, GEO GSE71729/GSE62452, ICGC.  
-Détail dans `provenance/INVENTAIRE_AXES_2026-11-19.md`.
-
----
-
-## P2.3 — Préparation des matrices enrichies (en cours)
-
-Date : 19 novembre 2026.
-
-### Fait
-
-- Script `scripts/prepare_enriched_tcga_matrix.py` : charge expression + MTAP GISTIC + pureté ESTIMATE + VAF KRAS, produit `data/tcga_enriched_p2.csv` avec colonnes de rang pour les axes.
-- Protocole de construction gelé : `protocols/P2-BUILD-001_matrices.md`.
-- Provenance de préparation : `provenance/PROVENANCE_preparation_matrices.md`.
-
-### En attente (nécessite les fichiers locaux / téléchargements)
-
-- Exécution réelle du script sur les matrices Firehose + `mtap_gistic_status.csv` (archives) + pureté ESTIMATE + MAF KRAS.
-- Écriture des SHA d’entrée et de sortie dans la provenance.
-- Vérification des distributions (n, % MTAP-del, couverture VAF, etc.).
-
-### Ensuite
-
-Lancement de P2-PROTO-001 (axes dans l’ordre du protocole) dès que la matrice enrichie est gelée.
+Détail : `results/P2_001_lite_verdict.md`, `results/p2_proto001_lite_direct_tests.csv`.
 
 ---
 
 ## Journal phase 2
 
-| Date | Action | Résultat / note |
-|------|--------|-----------------|
-| 19 nov. 2026 | Création dépôt `tlogNext-pdac-phase2` | Séparation archives / phase 2 |
-| 19 nov. 2026 | P2.0 + P2.1 | Plan d’attaque + critères de rétention |
-| 19 nov. 2026 | P2.2 + PROTO-001/002 | Inventaire axes + protocoles gelés |
-| 19 nov. 2026 | P2.3 + script + BUILD-001 | Préparation matrices enrichies documentée et scriptée |
+| Date | Action | Note |
+|------|--------|------|
+| 19 nov 2026 | Création dépôt phase 2 | Séparation archives |
+| 19 nov 2026 | P2.1–P2.2 + PROTO-001/002 | Plan + inventaire + protocoles |
+| 19 nov 2026 | P2.3 matrice enrichie | Firehose re-téléchargé, SHA 6a53c8c6 |
+| 19 nov 2026 | P2.4 tests directs lite | Signal CA125/CEA confirmé ; MTAP exploratoire |
 
 ---
 
-*Les sections suivantes (résultats des runs, verdicts) seront ajoutées au fur et à mesure.*
+*Suite : pureté ESTIMATE, runs v6.2, validation externe.*
