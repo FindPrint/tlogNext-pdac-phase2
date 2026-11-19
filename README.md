@@ -1,44 +1,41 @@
 # PDAC Phase 2 — Recentrage et pistes prioritaires
 
-**Dépôt phase 2** (19 nov. 2026) — séparé des archives v6.0–v6.2.
+**Dépôt phase 2** (19 nov. 2026)
 
-**Archives :** [FindPrint/tlogNext-cancer-pdac](https://github.com/FindPrint/tlogNext-cancer-pdac)  
-**Ce dépôt :** [FindPrint/tlogNext-pdac-phase2](https://github.com/FindPrint/tlogNext-pdac-phase2)
+**Archives :** [tlogNext-cancer-pdac](https://github.com/FindPrint/tlogNext-cancer-pdac)  
+**Ce dépôt :** [tlogNext-pdac-phase2](https://github.com/FindPrint/tlogNext-pdac-phase2)
 
 ---
 
-## État final de la session (19 nov 2026 soir)
+## État (19 nov 2026 soir)
+
+### Signal retenu
+**kras_high (Q4 expression KRAS) → CEA plus élevé**
+
+| Cohort | n | Cohen d | null_p |
+|--------|---|---------|--------|
+| TCGA-PAAD (après pureté) | 178 | +0,34 | 0,054 |
+| **GSE71729** | 145 | **+0,52** | **0,008** |
+| **GSE62452** | 69 | **+0,68** | **0,019** |
+
+Validation externe **positive**. MTAP et KRAS continu non retenus après pureté.
+
+### Documents
+- Livre blanc : `livre-blanc/livre-blanc-phase2.md` (P2.10)
+- `results/P2_010_GEO_validation.md`
+- `results/P2_009_retention_nulls.md`
+- `results/P2_011_targeted_v6_style.md`
 
 ### Matrice
 ```bash
 python scripts/restore_tcga_enriched_p2.py
-# → 179×24 · SHA256 6a53c8c6…
 ```
-Pureté InfiniumPurify jointe (n=178).
-
-### Signaux après pureté + tests de rétention (nuls)
-
-| Signal | null_p | Statut |
-|--------|--------|--------|
-| MTAP → CEA/CA125 | > 0,25 | **Non retenu** (confondu pureté) |
-| KRAS continu → CEA | 0,13 | **Non retenu** |
-| **kras_high (Q4) → CEA résidualisé** | **0,054** | **Faible / hypothétique** |
-
-Un seul axe frôle le seuil de rétention. Effet petit (d≈0,34).
-
-### Documents
-- Livre blanc : `livre-blanc/livre-blanc-phase2.md` (P2.9)
-- `results/P2_006_purity_confounding.md`
-- `results/P2_007_kras_after_purity.md`
-- `results/P2_009_retention_nulls.md`
 
 ### Avancement
-- [x] Matrice enrichie + restore fonctionnel
-- [x] Contrôle pureté (InfiniumPurify)
-- [x] Tests de rétention (nuls) sur axes prioritaires
-- [x] Négatifs honnêtes documentés (MTAP, KRAS continu)
-- [ ] Validation externe GEO du signal kras_high
-- [ ] UNIVERSAL_LOG v6.2 full sur l’axe restant
-- [ ] ESTIMATE / ABSOLUTE en complément
+- [x] Matrice + pureté + rétention nuls
+- [x] Validation GEO (GSE71729 + GSE62452)
+- [x] Négatifs honnêtes (MTAP, KRAS continu)
+- [ ] Run UNIVERSAL_LOG v6.2 full ciblé (axe kras_high)
+- [ ] ESTIMATE en complément
 
-Travail bénévole, non clinique, données publiques. Aucune promesse thérapeutique.
+Travail bénévole, non clinique, données publiques.
