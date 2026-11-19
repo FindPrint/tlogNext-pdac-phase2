@@ -1,13 +1,20 @@
 #!/usr/bin/env python3
-"""Reconstruit data/tcga_enriched_p2.csv depuis data/tcga_enriched_p2.csv.gz.b64
-SHA256 attendu: 6a53c8c64a20f8da0464642308841a3afafeade41bf044e0de226116fa7bfcfd
+"""Reconstruit data/tcga_enriched_p2.csv
+SHA256: 6a53c8c64a20f8da0464642308841a3afafeade41bf044e0de226116fa7bfcfd
 """
 import base64, gzip, hashlib
 from pathlib import Path
 
+def load_b64():
+    p = Path("data/tcga_enriched_p2.csv.gz.b64")
+    if p.exists():
+        return p.read_text().strip()
+    a = Path("data/tcga_enriched_p2.csv.gz.b64.a").read_text().strip()
+    b = Path("data/tcga_enriched_p2.csv.gz.b64.b").read_text().strip()
+    return a + b
+
 def main():
-    b64 = Path("data/tcga_enriched_p2.csv.gz.b64").read_text().strip()
-    raw = gzip.decompress(base64.b64decode(b64))
+    raw = gzip.decompress(base64.b64decode(load_b64()))
     h = hashlib.sha256(raw).hexdigest()
     expected = "6a53c8c64a20f8da0464642308841a3afafeade41bf044e0de226116fa7bfcfd"
     assert h == expected, f"got {h}"
