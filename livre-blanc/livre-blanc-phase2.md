@@ -7,86 +7,70 @@
 ---
 
 ## P2.0 — Nouveau dépôt (19 nov. 2026)
-
-Séparation archives / phase 2. Recentrage sur signaux robustes + axes légitimes + critères stricts.
-
----
-
-## P2.1 — Plan et critères de rétention
-
-Priorités : CA125/CEA stratification → contexte MTAP/PRMT5 → ATR surveillance.  
-Rétention = nul + rotation + ≥1 orthogonalité.
-
----
-
-## P2.2 — Inventaire axes
-
-VAF/expression KRAS, MTAP (GISTIC −2), pureté (InfiniumPurify intégré ; ESTIMATE encore souhaitable).
+Séparation archives / phase 2. Critères stricts (nul + rotation + orthogonalité).
 
 ---
 
 ## P2.3 — Matrice enrichie
-
-- Firehose RSEM + GISTIC re-téléchargés (MD5 vérifiés)
-- `tcga_enriched_p2.csv` : 179×24, SHA256 `6a53c8c64a20f8da0464642308841a3afafeade41bf044e0de226116fa7bfcfd`
-- **Restauration OK** : `python scripts/restore_tcga_enriched_p2.py` (chunks b64 vérifiés)
-- MTAP-del 43/179
+- `tcga_enriched_p2.csv` · 179×24 · SHA256 `6a53c8c6…`
+- Restauration : `python scripts/restore_tcga_enriched_p2.py` (**fonctionne**)
+- Pureté InfiniumPurify jointe (n=178)
 
 ---
 
-## P2.4 — Tests directs lite
-
-| Association | Stat | p |
-|-------------|------|---|
-| KRAS ↔ MUC16 | ρ=0,28 | 1,6×10⁻⁴ |
-| KRAS ↔ CEACAM5 | ρ=0,34 | 2,8×10⁻⁶ |
-| MTAP-del → MUC16/CEA ↑ | Δmed +1,9 / +1,5 | 0,011 / 0,004 |
+## P2.4–P2.6 — Signaux bruts
+- KRAS ↔ CEA ρ=0,34 · CA125 ρ=0,28
+- MTAP-del → CEA Cohen d=+0,53 · CA125 +0,46
+- Résiste au contrôle KRAS seul
 
 ---
 
-## P2.5 — Analyses étendues MTAP (contrôle KRAS)
-
-Signal MTAP→CEACAM5 résistant à l’ajustement KRAS (p≈0,01–0,02).  
-Détail : `results/P2_001_mtap_context_verdict.md`.
-
----
-
-## P2.6 — Analyses prioritaires + stratification
-
-Cohen d MTAP-del : CEA +0,53 · CA125 +0,46.  
-Résidus KRAS survivent. Stratification : effet plus clair hors haut quartile KRAS.
+## P2.7 — Pureté confond MTAP→CEA
+Après residualisation pureté (InfiniumPurify) :
+- MTAP → CEA **p ≈ 0,33–0,37 (ns)**
+→ Signal MTAP→sécrétoire **largement confondu** par pureté.
+Détail : `results/P2_006_purity_confounding.md`
 
 ---
 
-## P2.7 — Pureté tumorale = confounding majeur (19 nov 2026)
+## P2.8 — KRAS après contrôle pureté (19 nov 2026)
 
-**Source :** InfiniumPurify (Zenodo 253193), n=178 matchés.
+| Axis | Modèle | ρ | p |
+|------|--------|---|---|
+| CEA | brut | 0,343 | 2,7×10⁻⁶ |
+| CEA | ~ pureté puis ~ KRAS | 0,138 | **0,067** |
+| CEA | les deux résidualisés | 0,116 | 0,122 |
+| CA125 | ~ pureté puis ~ KRAS | 0,166 | **0,027** |
+| CA125 | les deux résidualisés | 0,143 | 0,057 |
 
-| Variable | ρ vs pureté | p |
-|----------|-------------|---|
-| ceacam5_rank | **+0,53** | 3×10⁻¹⁴ |
-| kras_rank | **+0,47** | 3×10⁻¹¹ |
-| muc16_rank | +0,24 | 0,001 |
-| mtap_del | +0,27 | 3×10⁻⁴ |
-
-**Après residualisation pureté (seule ou + KRAS) :**
-- MTAP-del → CEA : **p ≈ 0,33–0,37 (ns)**
+**kras_high (Q4) vs CEA résidualisé pureté** : MW p=0,033 · Cohen d≈0,34
 
 ### Verdict mis à jour
-Le signal **MTAP → CEA/CA125** observé précédemment est **largement confondu par la pureté tumorale**. Il ne passe pas le contrôle pureté.
+- Le signal **KRAS → CEA** est **fortement atténué** par pureté (passe de très significatif à borderline/ns selon le modèle).
+- Un effet résiduel du **haut quartile KRAS** persiste (p=0,033).
+- CA125 un peu plus résistant.
+- Interprétation : une partie du lien KRAS–sécrétoire est indépendante de la pureté, mais l’effet global était surestimé sans contrôle pureté.
 
-Conséquences :
-1. Tout futur run (UNIVERSAL_LOG ou tests directs) doit inclure pureté comme covariable/filtre.
-2. Le signal KRAS ↔ CEA doit être re-testé après contrôle pureté (prochaine priorité).
-3. Négatif honnête documenté : `results/P2_006_purity_confounding.md`.
+Détail : `results/P2_007_kras_after_purity.md`
 
 ---
 
-## Prochaines étapes (P2.8+)
-1. Re-tester KRAS → CEA/CA125 après contrôle pureté.
-2. Intégrer ESTIMATE / ABSOLUTE en complément d’InfiniumPurify.
-3. Lancer UNIVERSAL_LOG v6.2 avec pureté dans le modèle (nuls + rotations).
-4. Validation externe GEO.
+## Synthèse des signaux (état au 19 nov soir)
+
+| Signal | Brut | Après pureté | Statut |
+|--------|------|--------------|--------|
+| KRAS → CEA | fort | atténué / borderline | **faible mais non nul** |
+| KRAS → CA125 | moyen | atténué | faible |
+| MTAP → CEA | moyen | **disparu** | confondu |
+| MTAP → CA125 | moyen | disparu | confondu |
+
+---
+
+## Prochaines étapes (P2.9+)
+1. **UNIVERSAL_LOG v6.2** avec pureté comme covariable / filtre (nuls + rotations sur axes prioritaires).
+2. Compléter pureté avec ESTIMATE ou ABSOLUTE si disponible.
+3. Validation externe GEO (GSE71729 / GSE62452) en contrôlant pureté approximative si possible.
+4. Interaction formelle KRAS × pureté.
 
 ---
 
@@ -94,9 +78,9 @@ Conséquences :
 
 | Date | Action |
 |------|--------|
-| 19 nov | Dépôt phase 2 + protocoles + matrice |
-| 19 nov | Tests lite + residualisation KRAS |
-| 19 nov soir | P2.6 analyses prioritaires |
-| 19 nov soir | **P2.7 pureté : signal MTAP→CEA confondu** |
+| 19 nov | Dépôt + matrice + tests lite |
+| 19 nov | Residualisation KRAS + stratification |
+| 19 nov soir | P2.7 pureté confond MTAP |
+| 19 nov soir | **P2.8 KRAS atténué mais résidu haut quartile** |
 
 *Travail bénévole, non clinique, données publiques. Aucune promesse thérapeutique.*
