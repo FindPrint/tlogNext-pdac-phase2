@@ -5,68 +5,55 @@
 
 ---
 
-## Synthèse exécutive (19 nov 2026)
+## Synthèse exécutive
 
-Après contrôle pureté + tests de rétention (nuls) dans TCGA-PAAD, un seul signal frôle le seuil : **kras_high (Q4 expression) → CEA plus élevé** (d≈0,34 · null_p≈0,054).
+**Signal retenu :** kras_high (Q4 expression KRAS) → CEA plus élevé, après contrôle pureté.
 
-**Validation externe GEO :**
-- **GSE71729** (n=145 primary) : d=+0,52 · null_p=0,008
-- **GSE62452** (n=69 tumor) : d=+0,68 · null_p=0,019
+| Source | d | null_p |
+|--------|---|--------|
+| TCGA + pureté (safe runner) | +0,34 | 0,047 |
+| GSE71729 | +0,52 | 0,008 |
+| GSE62452 | +0,68 | 0,019 |
 
-→ Le signal se **réplique** dans deux cohortes indépendantes avec des effets moyens à forts.
-
-Les signaux MTAP→CEA et KRAS continu→CEA ne sont **pas retenus** après pureté.
-
----
-
-## P2.3 — Matrice TCGA
-`tcga_enriched_p2.csv` · 179×24 · SHA256 `6a53c8c6…`  
-Restauration : `python scripts/restore_tcga_enriched_p2.py`  
-Pureté InfiniumPurify jointe (n=178).
+MTAP→CEA et KRAS continu→CEA : **non retenus** (pureté).
 
 ---
 
-## P2.7–P2.9 — Contrôle pureté + rétention
-- MTAP → CEA : confondu par pureté → **DROP**
-- KRAS continu → CEA après pureté : null_p > 0,10 → **DROP**
-- kras_high → CEA résidualisé : null_p ≈ 0,054 → **faible RETAIN**
+## P2.14 — Analyse run full v6.2 (partiel) + safe (19–20 nov)
+
+### Full UNIVERSAL_LOG v6.2.0 (mode fast)
+- MC harmonique ✓ · T0 = **44,6 %** → kras_rank ≈ **79**
+- Paysage 29 estimateurs ✓ · tension holographique : **divergence** dominante (Δ=3,86)
+- Cascades L1–L7 : non terminées (interruption environnement)
+
+### T0 vs signal CEA
+Pre vs post T0 sur `cea_resid_purity` : **d ≈ 0,02 · p ≈ 0,80**
+
+→ Le T0 de complexité **n’est pas** le support du signal CEA.  
+→ Le signal retenu est un **effet de queue (Q4)**, pas une transition au milieu de série.
+
+### Runner safe (complet)
+Cohen d = +0,34 · null_p = 0,047 · retained · contrôle mtap_del OK.
+
+Détail : `results/P2_014_analysis_partial_v6_and_safe.md`
 
 ---
 
-## P2.10 — Validation GEO (19 nov soir)
+## Historique court
 
-| Dataset | n | ρ KRAS–CEA | d kras_high | null_p |
-|---------|---|------------|-------------|--------|
-| TCGA (après pureté) | 178 | ~0,12 | 0,34 | 0,054 |
-| GSE71729 | 145 | 0,27 | **0,52** | **0,008** |
-| GSE62452 | 69 | 0,44 | **0,68** | **0,019** |
-
-Détail : `results/P2_010_GEO_validation.md`
-
----
-
-## Statut des axes
-
-| Axe | TCGA + pureté + nuls | GEO | Décision |
-|-----|----------------------|-----|----------|
-| MTAP → CEA/CA125 | DROP | — | Non retenu |
-| KRAS continu → CEA | DROP | — | Non retenu |
-| **kras_high → CEA** | faible RETAIN | **répliqué** | **Retenu pour suivi** |
+| Étape | Résultat |
+|-------|----------|
+| P2.7 | Pureté confond MTAP |
+| P2.8–9 | KRAS continu atténué ; Q4 frôle rétention |
+| P2.10 | GEO valide Q4→CEA |
+| P2.12–13 | Runner safe + lancement full v6 |
+| **P2.14** | **T0 ≠ signal CEA ; Q4 confirmé** |
 
 ---
 
-## Prochaines étapes
-1. Run UNIVERSAL_LOG v6.2 **ciblé** sur kras_high / CEA (avec pureté covariable) dans TCGA.
-2. Explorer si le signal kras_high→CEA est lié au sous-type basal/classical (Moffitt) dans GSE71729.
-3. Compléter pureté (ESTIMATE) si possible.
+## Suite possible
+1. Finir le full v6 chez toi (JSON L1–L7) pour documentation complète.
+2. Contraste explicite binaire `kras_high` dans v6 (plutôt que progression seule).
+3. Sous-types Moffitt dans GSE71729 vs kras_high.
 
----
-
-## Journal
-
-| Date | Action |
-|------|--------|
-| 19 nov | Matrice + pureté + rétention nuls |
-| 19 nov soir | **P2.10 validation GEO positive (GSE71729 + GSE62452)** |
-
-*Travail bénévole, non clinique, données publiques. Aucune promesse thérapeutique.*
+*Travail bénévole, non clinique, données publiques.*
